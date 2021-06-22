@@ -1,5 +1,6 @@
 package com.ordersmanagement.comun;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class Plato implements Serializable{
@@ -14,6 +15,7 @@ public class Plato implements Serializable{
 	private String nombre;
 	
 	// TODO: Class of image attribute of plato class
+	private File imagen; 
 	
 	public Plato(int id_comida, String nombre) {
 		this.id_comida = id_comida;
@@ -29,6 +31,9 @@ public class Plato implements Serializable{
 		return nombre;
 	}
 
+	public File getImagen() {
+		return imagen;
+	}
 	
 	
 }
