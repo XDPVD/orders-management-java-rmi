@@ -1,7 +1,14 @@
 package com.ordersmanagement.comun;
 
-public class LineaPedido {
+import java.io.Serializable;
+
+public class LineaPedido implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 132L;
+
 	private int id_comida;
 	
 	private int cantidad;

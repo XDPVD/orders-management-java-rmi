@@ -1,11 +1,17 @@
 package com.ordersmanagement.comun;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
+public class Pedido implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4231L;
+
 	private String nombre_persona;
 	
 	private LocalDateTime fecha_pedido;
