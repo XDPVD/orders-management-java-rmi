@@ -4,16 +4,16 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import rmi.orders.api.IServidor;
+import rmi.orders.api.IServidorMesa;
 import rmi.orders.api.Utils;
 
 public class MainServidor {
 	public static void main(String[] args) throws Exception {
-		Utils.setCodeBase(IServidor.class);
+		Utils.setCodeBase(IServidorMesa.class);
 		
 		Servidor servidor = new Servidor();
 		
-		IServidor remote = (IServidor)UnicastRemoteObject.exportObject(servidor,3333);
+		IServidorMesa remote = (IServidorMesa)UnicastRemoteObject.exportObject(servidor,3333);
 		
 		Registry registry = LocateRegistry.createRegistry(3333);
 		

@@ -1,4 +1,4 @@
-package rmi.orders.testCliente;
+package rmi.orders.clCaja;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -6,15 +6,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 
-import rmi.orders.api.IServidorMesa;
+import rmi.orders.api.IServidor;
 
 
 public class MainCliente {
-	private static IServidorMesa servidor;
+	private static IServidor servidor;
 	
 	public static void main(String[] args) throws Exception {
 		Registry registry = LocateRegistry.getRegistry(3333);
-		servidor = (IServidorMesa)registry.lookup("TestServer");
+		servidor = (IServidor)registry.lookup("TestServer");
 		
 		metodoPrueba();
 	}
