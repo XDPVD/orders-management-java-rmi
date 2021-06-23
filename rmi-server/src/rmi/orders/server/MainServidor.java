@@ -13,7 +13,8 @@ public class MainServidor {
 		
 		Servidor servidor = new Servidor();
 		
-		IServidorMesa remote = (IServidorMesa)UnicastRemoteObject.exportObject(servidor,3333);
+		IServidorMesa remote = (IServidorMesa)UnicastRemoteObject
+				.exportObject(servidor,3333);
 		
 		Registry registry = LocateRegistry.createRegistry(3333);
 		
