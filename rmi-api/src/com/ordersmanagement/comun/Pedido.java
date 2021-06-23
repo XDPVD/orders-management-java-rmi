@@ -55,7 +55,8 @@ public class Pedido implements Serializable {
 		
 	}
 	
-	public void setDescDelivery(int dni, String direccion, int celular, float pago_pendiente) {
+	public void setDescDelivery(int dni, String direccion, 
+			int celular, float pago_pendiente) {
 		this.dni = dni;
 		this.direccion = direccion;
 		this.celular = celular;
