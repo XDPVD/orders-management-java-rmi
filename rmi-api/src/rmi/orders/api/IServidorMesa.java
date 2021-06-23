@@ -10,7 +10,7 @@ import java.util.*;
 public interface IServidorMesa extends IServidor{
 	
 	// SELECT * WHERE *
-	public HashMap<Integer,PedidoCrearDTO> obtenerPedidosTerminados()  
+	public List<PedidoDetailsDTO> obtenerPedidosTerminados()  
 			throws RemoteException, SQLException;
 	
 	public void marcarPedidos() throws RemoteException, SQLException;

@@ -8,16 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-<<<<<<< HEAD
 import java.time.LocalDateTime;
-=======
 import java.util.ArrayList;
->>>>>>> b94c659b093ba2f2784b5000a928a27ffbeb826c
-import java.util.HashMap;
 import java.util.List;
 
 import com.ordersmanagement.comun.LineaPedidoDTO;
 import com.ordersmanagement.comun.PedidoCrearDTO;
+import com.ordersmanagement.comun.PedidoDetailsDTO;
 import com.ordersmanagement.comun.PlatoDetallesDTO;
 
 import rmi.orders.api.IServidorCaja;
@@ -50,37 +47,6 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
             return;
         } 
 	}
-
-	@Override
-	public void mostrarTablas() throws RemoteException, SQLException {
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		ResultSet rs = null; 
-		stmt = connection.createStatement();
-        rs = stmt.executeQuery(
-         		"SHOW TABLES;"
-         );
-         System.out.println("Mostrar Tablas:");
-         while(rs.next()) {
-         	System.out.println(rs.getString("Tables_in_bwrcph0dvhr5vrn8m5ck"));
-         }
-	}
-	
-	@Override
-	public String enviarTablas() throws RemoteException, SQLException {
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		ResultSet rs = null; 
-		String envio ="";
-		stmt = connection.createStatement();
-        rs = stmt.executeQuery(
-         		"SHOW TABLES;"
-         );
-         while(rs.next()) {
-         	envio=envio+rs.getString("Tables_in_bwrcph0dvhr5vrn8m5ck")+"\n";
-         }
-		return envio;
-	}
 	
 	@Override
 	public void desconectar() throws RemoteException {
@@ -96,74 +62,67 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	}
 
 	@Override
-	public HashMap<Integer, Pedido> obtenerPedidosTerminados() throws RemoteException, SQLException{
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		ResultSet rs = null; 
-		
-		int i=0;
-		String envio ="";
-		stmt = connection.createStatement();
-        rs = stmt.executeQuery(
-         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'terminado';"
-         );
-        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
-         while(rs.next()) {
-        	 Pedido adj = new Pedido( 
-        			rs.getString("NOMBRE_PERSONA"), 
-     				rs.getDate("FECHA_PEDIDO"), 
-     				rs.getDate("FECHA_TERMINADO"), 
-     				rs.getString("ESTADO_PEDIDO"), 
-     				rs.getBoolean("DELIVERY"),
-     				rs.getInt("DNI"),
-     				rs.getString("Direccion"), 
-     				rs.getInt("CELULAR"), 
-     				rs.getFloat("PAGO_PENDIENTE")
-     		) ;
-        	pedidosTerminados.put(i,adj);
-        	i++;
-         	envio=envio+rs.toString()+"\n";
-         	System.out.println(envio);
-         }
-		return null;
+	public List<PedidoDetailsDTO> obtenerPedidosTerminados() throws RemoteException, SQLException{
+		System.out.println("--- Operacion obtenerPedidosTerminados ---");
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(
+				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='terminado';"
+		);
+		return writePedidosData(resultSet);
 	}
 
 	@Override
 	public int terminarPedido(int id_pedido) {
-		// TODO Auto-generated method stub
+		// TODO TerminarPedido
 		return 0;
 	}
 
 	@Override
-	public HashMap<Integer, Pedido> obtenerPedidosPendientes() throws RemoteException, SQLException {
-		Statement stmt = null;
-		ResultSet rs = null; 
-		
-		int i=0;
-		String envio ="";
-		stmt = connection.createStatement();
-        rs = stmt.executeQuery(
-         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'pendiente';"
-         );
-        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
-         while(rs.next()) {
-        	 Pedido adj = new Pedido( 
-        			rs.getString("NOMBRE_PERSONA"), 
-     				rs.getDate("FECHA_PEDIDO"), 
-     				rs.getDate("FECHA_TERMINADO"), 
-     				rs.getString("ESTADO_PEDIDO"), 
-     				rs.getBoolean("DELIVERY"),
-     				rs.getInt("DNI"),
-     				rs.getString("Direccion"), 
-     				rs.getInt("CELULAR"), 
-     				rs.getFloat("PAGO_PENDIENTE")
-     		) ;
-        	pedidosTerminados.put(i,adj);
-        	i++;
-         	envio=envio+rs.toString()+"\n";
-         	System.out.println(envio);
-         }
-		return null;
+	public List<PedidoDetailsDTO> obtenerPedidosPendientes() throws RemoteException, SQLException {
+		System.out.println("--- Operacion obtenerPedidosPendientes ---");
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(
+				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='pendiente';"
+		);
+		return writePedidosData(resultSet);
+	}
+	
+	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws SQLException {
+		ArrayList<PedidoDetailsDTO> pedidos = new ArrayList<PedidoDetailsDTO>();
+		while(result.next()) {
+			//Llena los detalles del Pedido
+			PedidoDetailsDTO detalles;
+			int id_pedido = result.getInt("ID_PEDIDO");
+			String nombre_persona = result.getString("NOMBRE_PERSONA");
+			boolean delivery = result.getBoolean("DELIVERY");
+			LocalDateTime fecha_pedido = result.getTimestamp("FECHA_PEDIDO").toLocalDateTime();
+			String estado_pedido = result.getString("ESTADO_PEDIDO");
+			LocalDateTime fecha_terminado = result.getTimestamp("FECHA_TERMINADO").toLocalDateTime();
+			if(!delivery) {
+				detalles = new PedidoDetailsDTO(id_pedido, nombre_persona, delivery, fecha_pedido, estado_pedido, fecha_terminado);
+			}else {
+				int dni = result.getInt("DNI");
+				String direccion = result.getString("DIRECCION");
+				int celular = result.getInt("CELULAR");
+				float pago = result.getFloat("PAGO_PENDIENTE");
+				detalles = new PedidoDetailsDTO(id_pedido, nombre_persona, delivery, fecha_pedido, estado_pedido, fecha_terminado,dni,direccion,celular,pago);
+			}
+			
+			//Llena las LineasPedido de cada Pedido
+			Statement statement = connection.createStatement();
+			ResultSet result2 = statement.executeQuery(
+					"SELECT * FROM LINEAPEDIDO WHERE ID_PEDIDO="+id_pedido
+			);
+			while(result2.next()) {
+				int id_comida = result2.getInt("ID_COMIDA");
+				int cantidad = result2.getInt("CANTIDAD");
+				detalles.anadirLineaPedido(new LineaPedidoDTO(id_comida,cantidad));
+			}
+			
+			//Insertar Pedido a la Lista
+			pedidos.add(detalles);
+		}
+		return pedidos;
 	}
 
 	@Override
@@ -184,7 +143,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		
 		while(result.next()) {
 			int id_comida = result.getInt("ID_COMIDA");
-			String nombre = result.getString("ID_COMIDA");
+			String nombre = result.getString("NOMBRE");
 			Blob imagen = result.getBlob("IMAGEN");
 			
 			platos.add(new PlatoDetallesDTO(id_comida, nombre, null));
@@ -261,6 +220,12 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		}
 		
 		return 1;
+		
+	}
+
+	@Override
+	public void marcarPedidos() throws RemoteException, SQLException {
+		// TODO marcarPedidos
 		
 	}
 	
