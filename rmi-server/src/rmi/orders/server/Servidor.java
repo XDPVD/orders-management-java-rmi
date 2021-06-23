@@ -6,71 +6,19 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
+import com.ordersmanagement.comun.Pedido;
+import com.ordersmanagement.comun.Plato;
+
+import rmi.orders.api.IServidorCaja;
+import rmi.orders.api.IServidorCocina;
 import rmi.orders.api.IServidorMesa;
 
-public class Servidor implements IServidorMesa{
+public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 
 	public Connection connection = null;
-	@Override
-	public String prueba() throws RemoteException {
-		return "Esto es una prueba";
-	}
-
-	@Override
-	public int getIdPedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getPersona() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDelivery() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getDni() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getDireccion() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getCelular() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean getPagoPendiente() throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Date getFecha_Pedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getEstadoPedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void conectar() throws RemoteException {
@@ -137,6 +85,36 @@ public class Servidor implements IServidorMesa{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+	}
+
+	@Override
+	public HashMap<Integer, Pedido> obtenerPedidosTerminados() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int terminarPedido(int id_pedido) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public HashMap<Integer, Pedido> obtenerPedidosPendientes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Plato> obtenerPlatos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void crearPedido(Pedido nuevoPedido) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
