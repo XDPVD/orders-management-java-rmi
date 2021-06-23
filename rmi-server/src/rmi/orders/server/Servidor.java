@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -88,8 +89,35 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	}
 
 	@Override
-	public HashMap<Integer, Pedido> obtenerPedidosTerminados() {
+	public HashMap<Integer, Pedido> obtenerPedidosTerminados() throws RemoteException, SQLException{
 		// TODO Auto-generated method stub
+		Statement stmt = null;
+		ResultSet rs = null; 
+		
+		int i=0;
+		String envio ="";
+		stmt = connection.createStatement();
+        rs = stmt.executeQuery(
+         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'terminado';"
+         );
+        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
+         while(rs.next()) {
+        	 Pedido adj = new Pedido( 
+        			rs.getString("NOMBRE_PERSONA"), 
+     				rs.getDate("FECHA_PEDIDO"), 
+     				rs.getDate("FECHA_TERMINADO"), 
+     				rs.getString("ESTADO_PEDIDO"), 
+     				rs.getBoolean("DELIVERY"),
+     				rs.getInt("DNI"),
+     				rs.getString("Direccion"), 
+     				rs.getInt("CELULAR"), 
+     				rs.getFloat("PAGO_PENDIENTE")
+     		) ;
+        	pedidosTerminados.put(i,adj);
+        	i++;
+         	envio=envio+rs.toString()+"\n";
+         	System.out.println(envio);
+         }
 		return null;
 	}
 
@@ -100,8 +128,34 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	}
 
 	@Override
-	public HashMap<Integer, Pedido> obtenerPedidosPendientes() {
-		// TODO Auto-generated method stub
+	public HashMap<Integer, Pedido> obtenerPedidosPendientes() throws RemoteException, SQLException {
+		Statement stmt = null;
+		ResultSet rs = null; 
+		
+		int i=0;
+		String envio ="";
+		stmt = connection.createStatement();
+        rs = stmt.executeQuery(
+         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'pendiente';"
+         );
+        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
+         while(rs.next()) {
+        	 Pedido adj = new Pedido( 
+        			rs.getString("NOMBRE_PERSONA"), 
+     				rs.getDate("FECHA_PEDIDO"), 
+     				rs.getDate("FECHA_TERMINADO"), 
+     				rs.getString("ESTADO_PEDIDO"), 
+     				rs.getBoolean("DELIVERY"),
+     				rs.getInt("DNI"),
+     				rs.getString("Direccion"), 
+     				rs.getInt("CELULAR"), 
+     				rs.getFloat("PAGO_PENDIENTE")
+     		) ;
+        	pedidosTerminados.put(i,adj);
+        	i++;
+         	envio=envio+rs.toString()+"\n";
+         	System.out.println(envio);
+         }
 		return null;
 	}
 
