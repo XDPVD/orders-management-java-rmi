@@ -1,4 +1,4 @@
-package rmi.orders.clCaja;
+package rmi.orders.testClient;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -8,7 +8,9 @@ import java.rmi.registry.Registry;
 
 import rmi.orders.api.IServidor;
 
+//TODO: Errase that code
 
+/*
 public class MainCliente {
 	private static IServidor servidor;
 	
@@ -24,3 +26,4 @@ public class MainCliente {
 		System.out.println(servidor.prueba());
 	}
 }
+*/
