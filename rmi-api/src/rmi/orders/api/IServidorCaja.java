@@ -9,8 +9,8 @@ import com.ordersmanagement.comun.*;
 
 public interface IServidorCaja extends IServidor {
 	
-	public List<Plato> obtenerPlatos() throws RemoteException, SQLException;
+	public List<PlatoDetallesDTO> obtenerPlatos() throws RemoteException, SQLException;
 	
-	public void crearPedido(Pedido nuevoPedido) throws RemoteException, SQLException;
+	public int crearPedido(PedidoCrearDTO nuevoPedido) throws RemoteException, SQLException;
 	
 }
