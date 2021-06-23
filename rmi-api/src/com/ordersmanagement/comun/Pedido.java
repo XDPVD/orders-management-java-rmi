@@ -12,6 +12,8 @@ public class Pedido implements Serializable {
 	 */
 	private static final long serialVersionUID = 4231L;
 
+	
+	
 	private String nombre_persona;
 	
 	private LocalDateTime fecha_pedido;
@@ -57,10 +59,12 @@ public class Pedido implements Serializable {
 	
 	public void setDescDelivery(int dni, String direccion, 
 			int celular, float pago_pendiente) {
+		
 		this.dni = dni;
 		this.direccion = direccion;
 		this.celular = celular;
 		this.pago_pendiente = pago_pendiente;
+		
 	}
 	
 	public void anadirLineaPedido(LineaPedido linea) {
@@ -101,7 +105,6 @@ public class Pedido implements Serializable {
 	public int getDni() {
 		return dni;
 	}
-
 
 	public String getDireccion() {
 		return direccion;
