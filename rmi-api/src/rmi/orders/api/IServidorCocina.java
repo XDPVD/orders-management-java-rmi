@@ -13,7 +13,7 @@ public interface IServidorCocina extends IServidor{
 			throws RemoteException, SQLException;
 	
 	//SELECT * WHERE *
-	public HashMap<Integer,Pedido> obtenerPedidosPendientes() 
+	public HashMap<Integer,PedidoCrearDTO> obtenerPedidosPendientes() 
 			throws RemoteException, SQLException;
 
 }

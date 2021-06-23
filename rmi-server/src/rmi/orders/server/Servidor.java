@@ -1,17 +1,24 @@
 package rmi.orders.server;
 
 import java.rmi.RemoteException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+<<<<<<< HEAD
 import java.time.LocalDateTime;
+=======
+import java.util.ArrayList;
+>>>>>>> b94c659b093ba2f2784b5000a928a27ffbeb826c
 import java.util.HashMap;
 import java.util.List;
 
-import com.ordersmanagement.comun.Pedido;
-import com.ordersmanagement.comun.Plato;
+import com.ordersmanagement.comun.LineaPedidoDTO;
+import com.ordersmanagement.comun.PedidoCrearDTO;
+import com.ordersmanagement.comun.PlatoDetallesDTO;
 
 import rmi.orders.api.IServidorCaja;
 import rmi.orders.api.IServidorCocina;
@@ -160,14 +167,100 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	}
 
 	@Override
-	public List<Plato> obtenerPlatos() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PlatoDetallesDTO> obtenerPlatos() throws RemoteException, SQLException {
+		System.out.println("--- Operacion obtenerPlatos ---");
+		
+		Statement statement = connection.createStatement();
+		
+		ResultSet resultSet = statement.executeQuery(
+				"SELECT ID_COMIDA, NOMBRE, IMAGEN FROM PLATO;"
+		);
+		
+		return writePlatosData(resultSet);
 	}
+	
+	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws SQLException {
+		ArrayList<PlatoDetallesDTO> platos = new ArrayList<PlatoDetallesDTO>();
+		
+		while(result.next()) {
+			int id_comida = result.getInt("ID_COMIDA");
+			String nombre = result.getString("ID_COMIDA");
+			Blob imagen = result.getBlob("IMAGEN");
+			
+			platos.add(new PlatoDetallesDTO(id_comida, nombre, null));
+			
+			// System.out.println("IMAGEN: " + imagen);
+		}
+		
+		return platos;
+	}
+	
 
 	@Override
-	public void crearPedido(Pedido nuevoPedido) {
+	public int crearPedido(PedidoCrearDTO nuevoPedido) throws SQLException  {
 		// TODO Auto-generated method stub
+		if(nuevoPedido.getNumbersOfLines() == 0) return -1;
+		
+		if(nuevoPedido.isDelivery()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, DNI, DIRECCION,"
+							+ " CELULAR, PAGO_PENDIENTE, FECHA_PEDIDO, ESTADO_PEDIDO)"+ 
+					"VALUES( ?, ?, ?, ?, ?, ?, ?, ?)"
+			);
+			
+			preparedStatement.setString(1, nuevoPedido.getNombre_persona());
+			preparedStatement.setBoolean(2, nuevoPedido.isDelivery());
+			
+			if(nuevoPedido.getDni() != null) preparedStatement.setInt(3, nuevoPedido.getDni());
+			else preparedStatement.setNull(3, java.sql.Types.INTEGER);
+			
+			preparedStatement.setString(4, nuevoPedido.getDireccion());
+			
+			if(nuevoPedido.getCelular() != null) preparedStatement.setInt(5, nuevoPedido.getCelular());
+			else preparedStatement.setNull(5, java.sql.Types.INTEGER);
+			
+			if(nuevoPedido.getPago_pendiente() != null) preparedStatement.setFloat(6, nuevoPedido.getPago_pendiente());
+			else preparedStatement.setNull(6, java.sql.Types.FLOAT);
+			
+			preparedStatement.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
+			preparedStatement.setString(8, "pendiente");
+			preparedStatement.executeUpdate();
+		}
+		else {
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, ESTADO_PEDIDO)"+ 
+					"VALUES( ?, ?, ?, ? )"
+			);
+			
+			preparedStatement.setString(1, nuevoPedido.getNombre_persona());
+			preparedStatement.setBoolean(2, nuevoPedido.isDelivery());
+			preparedStatement.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+			preparedStatement.setString(4, "pendiente");
+			preparedStatement.executeUpdate();
+		}
+		
+		Statement statement = connection.createStatement();
+		
+		ResultSet resultSet = statement.executeQuery(
+				"SELECT LAST_INSERT_ID() as last_id FROM PEDIDO;"
+		);
+		
+		resultSet.next();
+		int lastId = resultSet.getInt("last_id");
+		
+		for(LineaPedidoDTO linea: nuevoPedido.getLineasPedido()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(
+					"INSERT INTO LINEAPEDIDO(ID_PEDIDO, ID_COMIDA, CANTIDAD)"+ 
+					"VALUES( ?, ?, ?)"
+			);
+			
+			preparedStatement.setInt(1, lastId);
+			preparedStatement.setInt(2, linea.getId_comida());
+			preparedStatement.setInt(3, linea.getCantidad());
+			preparedStatement.executeUpdate();
+		}
+		
+		return 1;
 		
 	}
 	
