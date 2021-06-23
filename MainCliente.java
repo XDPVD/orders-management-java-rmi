@@ -22,7 +22,7 @@ public class MainCliente {
 	private static void metodoPrueba() throws RemoteException {
 		servidor.conectar();
 		try {
-			servidor.obtenerPedidosTerminados();
+			System.out.println("Mostrar Tablas:\n"+servidor.enviarTablas());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

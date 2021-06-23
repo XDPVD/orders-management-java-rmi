@@ -6,71 +6,20 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 
+import com.ordersmanagement.comun.Pedido;
+import com.ordersmanagement.comun.Plato;
+
+import rmi.orders.api.IServidorCaja;
+import rmi.orders.api.IServidorCocina;
 import rmi.orders.api.IServidorMesa;
 
-public class Servidor implements IServidorMesa{
+public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 
 	public Connection connection = null;
-	@Override
-	public String prueba() throws RemoteException {
-		return "Esto es una prueba";
-	}
-
-	@Override
-	public int getIdPedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getPersona() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDelivery() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getDni() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getDireccion() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getCelular() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean getPagoPendiente() throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Date getFecha_Pedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getEstadoPedido() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void conectar() throws RemoteException {
@@ -137,6 +86,89 @@ public class Servidor implements IServidorMesa{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+	}
+
+	@Override
+	public HashMap<Integer, Pedido> obtenerPedidosTerminados() throws RemoteException, SQLException{
+		// TODO Auto-generated method stub
+		Statement stmt = null;
+		ResultSet rs = null; 
+		
+		int i=0;
+		String envio ="";
+		stmt = connection.createStatement();
+        rs = stmt.executeQuery(
+         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'terminado';"
+         );
+        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
+         while(rs.next()) {
+        	 Pedido adj = new Pedido( 
+        			rs.getString("NOMBRE_PERSONA"), 
+     				rs.getDate("FECHA_PEDIDO"), 
+     				rs.getDate("FECHA_TERMINADO"), 
+     				rs.getString("ESTADO_PEDIDO"), 
+     				rs.getBoolean("DELIVERY"),
+     				rs.getInt("DNI"),
+     				rs.getString("Direccion"), 
+     				rs.getInt("CELULAR"), 
+     				rs.getFloat("PAGO_PENDIENTE")
+     		) ;
+        	pedidosTerminados.put(i,adj);
+        	i++;
+         	envio=envio+rs.toString()+"\n";
+         	System.out.println(envio);
+         }
+		return null;
+	}
+
+	@Override
+	public int terminarPedido(int id_pedido) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public HashMap<Integer, Pedido> obtenerPedidosPendientes() throws RemoteException, SQLException {
+		Statement stmt = null;
+		ResultSet rs = null; 
+		
+		int i=0;
+		String envio ="";
+		stmt = connection.createStatement();
+        rs = stmt.executeQuery(
+         		"SELECT * FROM PEDIDO WHERE ESTADO_PEDIDO = 'pendiente';"
+         );
+        HashMap<Integer, Pedido> pedidosTerminados = new HashMap<Integer, Pedido>();
+         while(rs.next()) {
+        	 Pedido adj = new Pedido( 
+        			rs.getString("NOMBRE_PERSONA"), 
+     				rs.getDate("FECHA_PEDIDO"), 
+     				rs.getDate("FECHA_TERMINADO"), 
+     				rs.getString("ESTADO_PEDIDO"), 
+     				rs.getBoolean("DELIVERY"),
+     				rs.getInt("DNI"),
+     				rs.getString("Direccion"), 
+     				rs.getInt("CELULAR"), 
+     				rs.getFloat("PAGO_PENDIENTE")
+     		) ;
+        	pedidosTerminados.put(i,adj);
+        	i++;
+         	envio=envio+rs.toString()+"\n";
+         	System.out.println(envio);
+         }
+		return null;
+	}
+
+	@Override
+	public List<Plato> obtenerPlatos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void crearPedido(Pedido nuevoPedido) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

@@ -1,15 +1,19 @@
 package rmi.orders.api;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.ordersmanagement.comun.*;
 
-public interface IServidorCocina extends Remote{
+public interface IServidorCocina extends IServidor{
 
-	public int terminarPedido(int id_pedido);
+	// UPDATE *
+	public int terminarPedido(int id_pedido) 
+			throws RemoteException, SQLException;
 	
-	public HashMap<Integer,Pedido> obtenerPedidosPendientes();
-	
+	//SELECT * WHERE *
+	public HashMap<Integer,Pedido> obtenerPedidosPendientes() 
+			throws RemoteException, SQLException;
+
 }

@@ -3,6 +3,7 @@ package com.ordersmanagement.comun;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Pedido implements Serializable {
@@ -12,11 +13,13 @@ public class Pedido implements Serializable {
 	 */
 	private static final long serialVersionUID = 4231L;
 
+	
+	
 	private String nombre_persona;
 	
-	private LocalDateTime fecha_pedido;
+	private Date fecha_pedido;
 	
-	private LocalDateTime fecha_terminado;
+	private Date fecha_terminado;
 	
 	private String estado_pedido;
 	
@@ -34,8 +37,8 @@ public class Pedido implements Serializable {
 			
 	public Pedido( 
 			String nombre_persona, 
-			LocalDateTime fecha_pedido, 
-			LocalDateTime fecha_terminado, 
+			Date fecha_pedido, 
+			Date fecha_terminado, 
 			String estado_pedido, 
 			boolean delivery,
 			int dni,
@@ -57,10 +60,12 @@ public class Pedido implements Serializable {
 	
 	public void setDescDelivery(int dni, String direccion, 
 			int celular, float pago_pendiente) {
+		
 		this.dni = dni;
 		this.direccion = direccion;
 		this.celular = celular;
 		this.pago_pendiente = pago_pendiente;
+		
 	}
 	
 	public void anadirLineaPedido(LineaPedido linea) {
@@ -75,12 +80,12 @@ public class Pedido implements Serializable {
 		return nombre_persona;
 	}
 
-	public LocalDateTime getFecha_pedido() {
+	public Date getFecha_pedido() {
 		return fecha_pedido;
 	}
 
 
-	public LocalDateTime getFecha_terminado() {
+	public Date getFecha_terminado() {
 		return fecha_terminado;
 	}
 
@@ -101,7 +106,6 @@ public class Pedido implements Serializable {
 	public int getDni() {
 		return dni;
 	}
-
 
 	public String getDireccion() {
 		return direccion;
