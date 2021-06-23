@@ -2,7 +2,7 @@ package com.ordersmanagement.comun;
 
 import java.io.Serializable;
 
-public class Plato implements Serializable{
+public class PlatoDetallesDTO implements Serializable{
 
 	/**
 	 * 
@@ -15,12 +15,12 @@ public class Plato implements Serializable{
 	
 	private byte[] imagen; 
 	
-	public Plato(int id_comida, String nombre, byte[] imagen) {
+	public PlatoDetallesDTO(int id_comida, String nombre, byte[] imagen) {
 		this.id_comida = id_comida;
 		this.nombre = nombre;
 	
 		//Copy of image array bytes
-		System.arraycopy(imagen, 0 , this.imagen, 0 , imagen.length);
+		if(imagen != null) System.arraycopy(imagen, 0 , this.imagen, 0 , imagen.length);
 		
 	}
 

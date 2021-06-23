@@ -5,16 +5,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.sql.SQLException;
 
-import rmi.orders.api.IServidorCaja;
 import rmi.orders.api.IServidorMesa;
 
 
 public class MainCliente {
-	private static IServidorCaja servidor;
+	private static IServidorMesa servidor;
 	
 	public static void main(String[] args) throws Exception {
 		Registry registry = LocateRegistry.getRegistry(3333);
-		servidor = (IServidorCaja)registry.lookup("TestServer");
+		servidor = (IServidorMesa)registry.lookup("TestServer");
 		
 		metodoPrueba();
 	}
@@ -23,7 +22,7 @@ public class MainCliente {
 	private static void metodoPrueba() throws RemoteException {
 		servidor.conectar();
 		try {
-			servidor.obtenerPlatos();
+			System.out.println("Mostrar Tablas:\n"+servidor.enviarTablas());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
