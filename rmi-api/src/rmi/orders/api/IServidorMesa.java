@@ -2,6 +2,7 @@ package rmi.orders.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Date;
 
 public interface IServidorMesa extends Remote {
@@ -15,4 +16,9 @@ public interface IServidorMesa extends Remote {
 	public boolean 	getPagoPendiente() 	throws RemoteException;
 	public Date 	getFecha_Pedido() 	throws RemoteException;
 	public String 	getEstadoPedido() 	throws RemoteException;
+	
+	public void 	conectar() 			throws RemoteException;
+	public void 	desconectar() 		throws RemoteException;
+	public void 	mostrarTablas() 	throws RemoteException, SQLException;
+	public String 	enviarTablas() 		throws RemoteException, SQLException;
 }

@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-
+import java.sql.SQLException;
 
 import rmi.orders.api.IServidorMesa;
 
@@ -21,6 +21,16 @@ public class MainCliente {
 	
 	
 	private static void metodoPrueba() throws RemoteException {
-		System.out.println(servidor.prueba());
+		servidor.conectar();
+		try {
+			System.out.println("Mostrar Tablas:\n"+servidor.enviarTablas());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		servidor.desconectar();
 	}
 }
