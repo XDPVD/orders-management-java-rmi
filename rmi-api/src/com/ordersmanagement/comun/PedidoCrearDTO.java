@@ -36,9 +36,9 @@ public class PedidoCrearDTO implements Serializable {
 		
 	}
 	
-	public PedidoCrearDTO( String nombre_persona, boolean delivery,
-			Integer dni, String direccion, Integer celular, float pago_pendiente) 
-		{
+	public PedidoCrearDTO( 	String nombre_persona, boolean delivery, 
+							Integer dni, String direccion, Integer celular, float pago_pendiente) 
+	{
 			
 			this(nombre_persona, delivery);
 			
