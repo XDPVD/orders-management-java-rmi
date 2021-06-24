@@ -1,5 +1,15 @@
 package rmi.orders.server;
 
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.time.LocalDateTime;
+
+import rmi.orders.api.IServidorCocina;
+import rmi.orders.api.IServidorMesa;
+import rmi.orders.api.IServidorCaja;
+
 import java.rmi.RemoteException;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -8,23 +18,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.ordersmanagement.comun.LineaPedidoDTO;
 import com.ordersmanagement.comun.PedidoCrearDTO;
 import com.ordersmanagement.comun.PedidoDetailsDTO;
 import com.ordersmanagement.comun.PlatoDetallesDTO;
 
-import rmi.orders.api.IServidorCaja;
-import rmi.orders.api.IServidorCocina;
-import rmi.orders.api.IServidorMesa;
-
 public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 
 	public Connection connection = null;
 
+	@Override
+	public void archivarPedido(int id_pedido) throws RemoteException, SQLException{
+		// TODO marcarPedidos
+		PreparedStatement pstmt = connection.prepareStatement(
+			"UPDATE PEDIDO SET ARCHIVADO ='1' WHERE ID_PEDIDO="+id_pedido
+		);
+		pstmt.executeUpdate();
+		
+	}
+	
 	@Override
 	public void conectar() throws RemoteException {
 		// TODO Auto-generated method stub
@@ -72,10 +85,24 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	}
 
 	@Override
-	public int terminarPedido(int id_pedido) {
-		// TODO TerminarPedido
+	public int terminarPedido(int id_pedido) throws RemoteException, SQLException {
+		Date date = new Date();
+		
+		PreparedStatement pstmt = connection.prepareStatement(
+			"UPDATE PEDIDO SET ESTADO_PEDIDO ='terminado' WHERE ID_PEDIDO="+id_pedido
+		);
+		PreparedStatement pstmt2 = connection.prepareStatement(
+				"UPDATE PEDIDO SET FECHA_TERMINADO =? WHERE ID_PEDIDO="+id_pedido
+		);
+		
+		pstmt2.setTimestamp(1,new  java.sql.Timestamp(date.getTime()));
+		
+		pstmt.executeUpdate();
+		pstmt2.executeUpdate();
+		
 		return 0;
 	}
+	
 
 	@Override
 	public List<PedidoDetailsDTO> obtenerPedidosPendientes() throws RemoteException, SQLException {
@@ -97,7 +124,15 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			boolean delivery = result.getBoolean("DELIVERY");
 			LocalDateTime fecha_pedido = result.getTimestamp("FECHA_PEDIDO").toLocalDateTime();
 			String estado_pedido = result.getString("ESTADO_PEDIDO");
-			LocalDateTime fecha_terminado = result.getTimestamp("FECHA_TERMINADO").toLocalDateTime();
+			
+			LocalDateTime fecha_terminado;
+			if (result.getTimestamp("FECHA_TERMINADO")!=null) {
+				fecha_terminado = result.getTimestamp("FECHA_TERMINADO").toLocalDateTime();
+			}
+			else {
+				fecha_terminado = null;
+			}
+			
 			if(!delivery) {
 				detalles = new PedidoDetailsDTO(id_pedido, nombre_persona, delivery, fecha_pedido, estado_pedido, fecha_terminado);
 			}else {
@@ -110,13 +145,27 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			
 			//Llena las LineasPedido de cada Pedido
 			Statement statement = connection.createStatement();
+			Statement statement2 = connection.createStatement();
 			ResultSet result2 = statement.executeQuery(
 					"SELECT * FROM LINEAPEDIDO WHERE ID_PEDIDO="+id_pedido
 			);
+			
 			while(result2.next()) {
+				
 				int id_comida = result2.getInt("ID_COMIDA");
+				
 				int cantidad = result2.getInt("CANTIDAD");
-				detalles.anadirLineaPedido(new LineaPedidoDTO(id_comida,cantidad));
+				
+				ResultSet result3 = statement2.executeQuery(
+						"SELECT NOMBRE FROM PLATO WHERE ID_COMIDA="+id_comida
+				);
+				
+				
+				String nombre_comida;
+				result3.next();
+				nombre_comida = result3.getString("NOMBRE");	
+				
+				detalles.anadirLineaPedido(new LineaPedidoDTO(id_comida,cantidad, nombre_comida));
 			}
 			
 			//Insertar Pedido a la Lista
@@ -160,11 +209,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		// TODO Auto-generated method stub
 		if(nuevoPedido.getNumbersOfLines() == 0) return -1;
 		
+		Date currentDate = new Date();
+		
 		if(nuevoPedido.isDelivery()) {
 			PreparedStatement preparedStatement = connection.prepareStatement(
 					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, DNI, DIRECCION,"
-							+ " CELULAR, PAGO_PENDIENTE, FECHA_PEDIDO, ESTADO_PEDIDO)"+ 
-					"VALUES( ?, ?, ?, ?, ?, ?, ?, ?)"
+							+ " CELULAR, PAGO_PENDIENTE, FECHA_PEDIDO, ESTADO_PEDIDO, ARCHIVADO)"+ 
+					"VALUES( ?, ?, ?, ?, ?, ?, ?, ?, 0)"
 			);
 			
 			preparedStatement.setString(1, nuevoPedido.getNombre_persona());
@@ -181,9 +232,10 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			if(nuevoPedido.getPago_pendiente() != null) preparedStatement.setFloat(6, nuevoPedido.getPago_pendiente());
 			else preparedStatement.setNull(6, java.sql.Types.FLOAT);
 			
-			preparedStatement.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
+			preparedStatement.setTimestamp(7, new java.sql.Timestamp(currentDate.getTime()));
 			preparedStatement.setString(8, "pendiente");
 			preparedStatement.executeUpdate();
+			
 		}
 		else {
 			PreparedStatement preparedStatement = connection.prepareStatement(
@@ -193,7 +245,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			
 			preparedStatement.setString(1, nuevoPedido.getNombre_persona());
 			preparedStatement.setBoolean(2, nuevoPedido.isDelivery());
-			preparedStatement.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+			preparedStatement.setTimestamp(3, new java.sql.Timestamp(currentDate.getTime()));
 			preparedStatement.setString(4, "pendiente");
 			preparedStatement.executeUpdate();
 		}
@@ -217,18 +269,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			preparedStatement.setInt(2, linea.getId_comida());
 			preparedStatement.setInt(3, linea.getCantidad());
 			preparedStatement.executeUpdate();
+			
 		}
 		
 		return 1;
 		
 	}
 
-	@Override
-	public void marcarPedidos() throws RemoteException, SQLException {
-		// TODO marcarPedidos
-		
-	}
 	
 	
-
 }

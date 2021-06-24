@@ -9,6 +9,33 @@ public class PedidoCrearDTO implements Serializable {
 	
 	/**
 	 * 
+	 * getNumbersOfLines() -> devuelve las lineas de pedido que tiene el pedido (int)
+	 * isDelivery() -> devuelve un booleano que indica si el pedido es para delivery o no
+	 * getNombre_persona() -> devuelve el nombre de la persona que pidio el pedido
+	 * getDNI() -> identificacion (int)
+ 	 * getDireccion() -> string
+ 	 * getCelular() -> int
+ 	 * getPagoPendiente() -> float
+ 	 * 
+ 	 * getLineasPedido() devuelve los objetos de LineaPedido
+ 	 * 
+ 	 * PedidoCrearDTO es una clase que instancia objetos que seran llevados como input al backend para que este 
+ 	 * puede crear un registro en la tabla PEDIDO con los atributos que contiene dicha clase.
+ 	 * Se puede ver que no hay los atributos de id_pedido, fecha_terminado, etc... Dedido a que esto solo se utilizara en le backend
+ 	 * y en la clase PedidoDetails 
+ 	 * 
+ 	 * El objeto DEBE ser construido al menos con los parametros nombre_persona y delivery (Primer constructor)
+ 	 * 
+ 	 * En caso el delivery sea verdadero, el objeto DEBE tener todos los parametros llenos. (Segundo constructor)
+ 	 * 
+ 	 * LineasPedido se establece luego de la invocacion del constructor, esto mediante el metodo addLineaPedido que 
+ 	 * permite el ingreso de un objeto de la clase LineaPedidoDTO.
+ 	 * 
+ 	 * Al ejecutar este comando, addLineaPedido() agrega un elemento adicional al arraylist interno que tiene el objeto PedidoCrearDTO.
+ 	 * 
+ 	 * El objeto deberia crearse (junto a sus lineaspedido) luego de dar click al boton submit del formulario. Luego
+ 	 * el formulario debera limpiarse.
+ 	 * 
 	 */
 	private static final long serialVersionUID = 4231L;
 

@@ -8,6 +8,17 @@ import java.util.List;
 public class PedidoDetailsDTO implements Serializable {
 	
 	/**
+	 * Ver antes PedidoCrearDTO...
+	 * 
+	 * PedidoDetailsDTO
+	 * Esta clase sirve mas para crear objetos que contengan la informacion de los pedidos  que vengan del backend.
+	 * 
+	 * Solo hay getters.
+	 * 
+	 * La diferencia principal que hay es la aparacion del atributo id_pedido.
+	 * esto se puede solicitar mediante getId_pedido()
+	 * 
+	 * Ver luego LineaPedidoDTO.java
 	 * 
 	 */
 	private static final long serialVersionUID = 4231L;
@@ -30,11 +41,14 @@ public class PedidoDetailsDTO implements Serializable {
 	private String estado_pedido;
 	private LocalDateTime fecha_terminado;
 	
+	private boolean archivado;
+	
 	private List<LineaPedidoDTO> lineasPedido;  
 			
 	public PedidoDetailsDTO(int id_pedido, String nombre_persona, boolean delivery, 
 			LocalDateTime fecha_pedido, String estado_pedido, LocalDateTime fecha_terminado) 
 	{
+		this.id_pedido = id_pedido;
 		
 		this.nombre_persona = nombre_persona;
 		this.delivery = delivery;
@@ -50,12 +64,12 @@ public class PedidoDetailsDTO implements Serializable {
 	public PedidoDetailsDTO( int id_pedido, String nombre_persona, boolean delivery,
 			LocalDateTime fecha_pedido, String estado_pedido, LocalDateTime fecha_terminado,
 			Integer dni, String direccion, Integer celular, float pago_pendiente) 
-		{
-			
-			this(id_pedido, nombre_persona, delivery,fecha_pedido,estado_pedido,fecha_terminado);
-			
-			if(delivery) this.extraDescription(dni, direccion, celular, pago_pendiente);
-			
+	{
+		
+		this(id_pedido, nombre_persona, delivery,fecha_pedido,estado_pedido,fecha_terminado);
+		
+		if(delivery) this.extraDescription(dni, direccion, celular, pago_pendiente);
+		
 	}
 	
 	private void extraDescription( int dni, String direccion, int celular, float pago_pendiente) {
@@ -115,6 +129,10 @@ public class PedidoDetailsDTO implements Serializable {
 
 	public String getEstado_pedido() {
 		return estado_pedido;
+	}
+	
+	public boolean isArchivado() {
+		return this.archivado;
 	}
 
 	public LocalDateTime getFecha_terminado() {
