@@ -36,12 +36,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		);
 		pstmt.executeUpdate();
 		
+		System.out.println("-- archivarPedido(+id_pedido+) BEGIN --");
+		System.out.println("-- archivarPedido(+id_pedido+) END --");
 	}
 	
 	@Override
 	public void conectar() throws RemoteException {
 		// TODO Auto-generated method stub
-		System.out.println("-------- MySQL JDBC Connection Demo ------------");
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -50,7 +51,6 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
             System.out.println("MySQL JDBC Driver not found !!");
             return;
         }
-        System.out.println("MySQL JDBC Driver Registered!");
         try {
             connection = DriverManager
                 .getConnection("jdbc:mysql://bwrcph0dvhr5vrn8m5ck-mysql.services.clever-cloud.com:3306/bwrcph0dvhr5vrn8m5ck", "uz9kho774z7lvi7g", "1m39fvxAPqVNylU6JMiU");
@@ -77,12 +77,14 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	@Override
 	public List<PedidoDetailsDTO> obtenerPedidosTerminados() throws RemoteException, SQLException{
 		this.conectar();
-		System.out.println("--- Operacion obtenerPedidosTerminados ---");
+		
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='terminado';"
 		);
 		this.desconectar();
+		System.out.println("---- obtenerPedidosTerminados() BEGIN ----");
+		System.out.println("---- obtenerPedidosTerminados() END ----");
 		return writePedidosData(resultSet);
 	}
 
@@ -102,7 +104,8 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		
 		pstmt.executeUpdate();
 		pstmt2.executeUpdate();
-		
+		System.out.println("---- terminarPedido("+id_pedido+") BEGIN ----");
+		System.out.println("---- terminarPedido("+id_pedido+") END ----");
 		this.desconectar();
 		return 0;
 	}
@@ -111,17 +114,19 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	@Override
 	public List<PedidoDetailsDTO> obtenerPedidosPendientes() throws RemoteException, SQLException {
 		this.conectar();
-		System.out.println("--- Operacion obtenerPedidosPendientes ---");
+		
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='pendiente';"
 		);
+		
+		System.out.println("------ obtenerPedidosPendientes() ------");
+		System.out.println(resultSet);
 		return writePedidosData(resultSet);
 	}
 	
 	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PedidoDetailsDTO> pedidos = new ArrayList<PedidoDetailsDTO>();
-		//this.conectar();
 		while(result.next()) {
 			//Llena los detalles del Pedido
 			PedidoDetailsDTO detalles;
@@ -177,7 +182,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			//Insertar Pedido a la Lista
 			pedidos.add(detalles);
 		}
-		this.desconectar();
+		System.out.println("------ devolviendo Pedidos END ------");
 		return pedidos;
 	}
 
@@ -192,7 +197,10 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 				"SELECT ID_COMIDA, NOMBRE, IMAGEN FROM PLATO;"
 		);
 		this.desconectar();
+		System.out.println("--- Operacion obtenerPlatos END ---");
+		this.desconectar();
 		return writePlatosData(resultSet);
+		
 	}
 	
 	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws RemoteException, SQLException {
@@ -248,8 +256,9 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		}
 		else {
 			PreparedStatement preparedStatement = connection.prepareStatement(
-					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, ESTADO_PEDIDO)"+ 
-					"VALUES( ?, ?, ?, ? )"
+					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, "
+					+ "ESTADO_PEDIDO, ARCHIVADO)"+ 
+					"VALUES( ?, ?, ?, ? , 0)"
 			);
 			
 			preparedStatement.setString(1, nuevoPedido.getNombre_persona());
@@ -280,6 +289,10 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			preparedStatement.executeUpdate();
 			
 		}
+		
+		System.out.println("---- crearPedido() BEGIN ----");
+		System.out.println(nuevoPedido.toString());
+		System.out.println("---- crearPedido() END ----");
 		this.desconectar();
 		return 1;
 		

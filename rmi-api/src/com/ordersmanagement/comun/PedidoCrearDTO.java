@@ -124,4 +124,24 @@ public class PedidoCrearDTO implements Serializable {
 		this.lineasPedido = lineasPedido;
 	}
 	
+	public String toString() {
+		String informacionPedido = "## Pedido ##\n"
+				+ "Nombre: " + this.nombre_persona +"\n"
+				+ "Delivery: "+this.delivery +"\n"
+				+ "DNI: "+this.dni +"\n"
+				+ "Direccion: "+this.direccion +"\n"
+				+ "Celular: "+this.celular +"\n"
+				+ "Pago_pendiente: "+this.pago_pendiente;
+		
+		String lineasPedido = "";
+		
+		for (LineaPedidoDTO lineaPedidoDTO : this.lineasPedido) {
+			lineasPedido += lineaPedidoDTO.toString();
+		}
+
+		return informacionPedido + "\n" + lineasPedido;
+		
+	}
+	
+	
 }

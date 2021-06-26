@@ -49,4 +49,11 @@ public class LineaPedidoDTO implements Serializable {
 		return this.nombre_comida;
 	}
 	
+	public String toString() {
+		return "\t## LineaPedido\n"
+				+ "\tNombre comida: " + this.nombre_comida + "\n"
+				+ "\tCantidad: "+this.cantidad + "\n";
+	}
+	
+	
 }
