@@ -12,7 +12,7 @@ import java.util.List;
 
 import rmi.orders.api.*;
 import com.ordersmanagement.comun.*;
-
+import java.util.ArrayList;
 
 public class MainCliente{
 	
@@ -20,7 +20,7 @@ public class MainCliente{
 	
 	private static IServidorCaja servidor;
 	private static PedidoCrearDTO pedido;
-	private static LineaPedidoDTO lineaPedido;
+	private static List<LineaPedidoDTO> lineasPedido = new ArrayList<LineaPedidoDTO>();
 	private static GUICliente gui;
 	private static int exitoPedido;
 	
@@ -32,12 +32,12 @@ public class MainCliente{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == gui.getBtnAddOrder()) {
-					pedido = gui.getPedidoGUI();
-					lineaPedido = gui.getLineaPedidoGUI();
-					pedido.anadirLineaPedido(lineaPedido);
+					lineasPedido.add(gui.getLineaPedidoGUI());
 				}
 				
 				if(e.getSource() == gui.getBtnSendOrder()) {
+					pedido = gui.getPedidoGUI();
+					pedido.setLineasPedido(lineasPedido);
 					try {
 						if(pedido != null) {
 							crearPedido();

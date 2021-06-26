@@ -120,4 +120,8 @@ public class PedidoCrearDTO implements Serializable {
 		return lineasPedido;
 	}
 	
+	public void setLineasPedido(List<LineaPedidoDTO> lineasPedido) {
+		this.lineasPedido = lineasPedido;
+	}
+	
 }

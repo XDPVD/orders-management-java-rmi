@@ -288,8 +288,8 @@ public class GUICliente extends JFrame{
 	
 	public LineaPedidoDTO getLineaPedidoGUI() {
 		LineaPedidoDTO lineaPedido = null;
-		if(txtIdFood.getText().equals("")
-		  || txtQuantity.getText().equals("")) {
+		if(!txtIdFood.getText().equals("")
+		 || !txtQuantity.getText().equals("")) {
 			lineaPedido = new LineaPedidoDTO(Integer.parseInt(txtIdFood.getText()),
 											Integer.parseInt(txtQuantity.getText()));
 		}
