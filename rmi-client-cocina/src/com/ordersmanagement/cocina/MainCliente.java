@@ -21,7 +21,6 @@ public class MainCliente {
 		Registry registry = LocateRegistry.getRegistry(3333);
 		servidor = (IServidorCocina)registry.lookup("TestServer");
 		
-		
 	}
 	
 	
