@@ -43,6 +43,7 @@ public class MainCocina {
 						terminarPedido();
 						obtenerPedidosPendientes();			
 						gui.addPedidos(listaPedidos);
+						System.out.print(exito);
 					}
 					catch(RemoteException | SQLException ex) {
 						ex.printStackTrace();
