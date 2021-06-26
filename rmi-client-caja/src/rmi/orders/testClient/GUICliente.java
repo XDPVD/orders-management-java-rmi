@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.ordersmanagement.comun.LineaPedidoDTO;
 import com.ordersmanagement.comun.PedidoCrearDTO;
+import com.ordersmanagement.comun.PlatoDetallesDTO;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -188,6 +190,8 @@ public class GUICliente extends JFrame{
 		
 	}
 	
+	
+	
 	public void setTable() {
 		
 		//------------------------------------------------------ ORDER LINE ----------------------------------------------------------------------
@@ -196,20 +200,14 @@ public class GUICliente extends JFrame{
 		modelOrderLine.addColumn("Id de Comida");
 		modelOrderLine.addColumn("Cantidad");
         
-        String []comida01={"01","2"};  
-        String []comida02={"02","3"};
-        modelOrderLine.addRow(comida01);
-        modelOrderLine.addRow(comida02);
         
         tableOrderLine = new JTable(modelOrderLine);
         tableOrderLine.setBounds(34, 480, 350, 100);
         panel.add(tableOrderLine);
         
-         scrollOrderLine = new JScrollPane(tableOrderLine,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollOrderLine = new JScrollPane(tableOrderLine,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollOrderLine.setBounds(40, 440, 340, 150);
         panel.add(scrollOrderLine);
-		
-		
 		
 		
 		//------------------------------------------------------ FOOD LIST ----------------------------------------------------------------------
@@ -217,12 +215,7 @@ public class GUICliente extends JFrame{
         modelFoodList = new DefaultTableModel();
 		modelFoodList.addColumn("Id de Comida");
 		modelFoodList.addColumn("Nombre");
-		modelFoodList.addColumn("Imagen");
         
-        String []comida1={"01","Pan con tortilla","*inserte pan con tortilla*"};
-        String []comida2={"02","Pan con tortilla","*inserte pan con tortilla*"};
-        modelFoodList.addRow(comida1);
-        modelFoodList.addRow(comida2);
         
         tableFoodList = new JTable(modelFoodList);
         tableFoodList.setBounds(400, 120, 350, 600);
@@ -231,6 +224,31 @@ public class GUICliente extends JFrame{
         scrollFoodList = new JScrollPane(tableFoodList,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollFoodList.setBounds(405, 89, 395, 521);
         panel.add(scrollFoodList);        
+	}
+	
+	public void showOrderLine() {
+		modelOrderLine.addRow(new Object[] {
+				txtIdFood.getText(),
+				txtQuantity.getText()
+		});
+	}
+	
+	public void showListOfFood(List<PlatoDetallesDTO>listaPlatos) {
+		for(PlatoDetallesDTO plato : listaPlatos) {
+			modelFoodList.addRow(new Object[]{
+					plato.getId_comida(),
+					plato.getNombre(),
+					plato.getImagen()
+			});			
+		}
+	}
+	
+	public void clearFieldsOrderLine() {
+		txtName.setText("");
+		txtIdFood.setText("");
+		txtQuantity.setText("");
+		modelOrderLine.setRowCount(0);
+		
 	}
 	
 	public void setRadioButtons() {

@@ -182,7 +182,6 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			//Insertar Pedido a la Lista
 			pedidos.add(detalles);
 		}
-		this.desconectar();
 		System.out.println("------ devolviendo Pedidos END ------");
 		return pedidos;
 	}
@@ -199,11 +198,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		);
 
 		System.out.println("--- Operacion obtenerPlatos END ---");
+		
 		return writePlatosData(resultSet);
 		
 	}
 	
 	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws RemoteException, SQLException {
+		System.out.print("miguelon");
 		ArrayList<PlatoDetallesDTO> platos = new ArrayList<PlatoDetallesDTO>();
 
 		while(result.next()) {

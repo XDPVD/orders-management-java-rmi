@@ -13,6 +13,7 @@ import java.util.List;
 import rmi.orders.api.*;
 import com.ordersmanagement.comun.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainCliente{
 	
@@ -21,6 +22,7 @@ public class MainCliente{
 	private static IServidorCaja servidor;
 	private static PedidoCrearDTO pedido;
 	private static List<LineaPedidoDTO> lineasPedido = new ArrayList<LineaPedidoDTO>();
+	private static List<PlatoDetallesDTO> listaPlatos = new ArrayList<PlatoDetallesDTO>();
 	private static GUICliente gui;
 	private static int exitoPedido;
 	
@@ -33,6 +35,7 @@ public class MainCliente{
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == gui.getBtnAddOrder()) {
 					lineasPedido.add(gui.getLineaPedidoGUI());
+					gui.showOrderLine();
 				}
 				
 				if(e.getSource() == gui.getBtnSendOrder()) {
@@ -41,8 +44,11 @@ public class MainCliente{
 					try {
 						if(pedido != null) {
 							crearPedido();
-							System.out.print(exitoPedido);	
+							System.out.print(exitoPedido);
+							
 						}
+						gui.clearFieldsOrderLine();
+						lineasPedido.clear();
 					}
 					catch(RemoteException | SQLException ex) {
 						ex.printStackTrace();
@@ -50,13 +56,15 @@ public class MainCliente{
 				}
 				
 			}
-			
 		};
 		
 		gui.addAL(action);
 		
 		Registry registry = LocateRegistry.getRegistry(3333);
 		servidor = (IServidorCaja)registry.lookup("TestServer");
+		
+		obtenerPlatos();
+		gui.showListOfFood(listaPlatos);
 		
 	}
 	
@@ -66,5 +74,7 @@ public class MainCliente{
 		exitoPedido = servidor.crearPedido(pedido);
 	}
 	
-	
+	public static void obtenerPlatos() throws RemoteException, SQLException{
+		listaPlatos = servidor.obtenerPlatos();
+	}
 }
