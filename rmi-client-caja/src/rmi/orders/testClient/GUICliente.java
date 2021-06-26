@@ -106,11 +106,6 @@ public class GUICliente extends JFrame{
 		lblBalance.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblBalance);
 		
-		JLabel lblDate = new JLabel("Fecha de Pedido:");
-		lblDate.setBounds(40, 270, 115, 14);
-		lblDate.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel.add(lblDate);		
-		
 		
 		//------------------------------------------------------ ORDER LINE ----------------------------------------------------------------------
 		
@@ -164,12 +159,7 @@ public class GUICliente extends JFrame{
 		txtBalance.setColumns(10);
 		txtBalance.setBounds(160, 237, 150, 20);
 		panel.add(txtBalance);
-		
-		txtDate = new JTextField();
-		txtDate.setColumns(10);
-		txtDate.setBounds(160, 267, 150, 20);
-		panel.add(txtDate);
-		
+
 		//-------------------------------------------------------------- ORDER-FOOD ----------------------------------------------------------------------
 		
 		 txtIdFood = new JTextField();
@@ -271,7 +261,7 @@ public class GUICliente extends JFrame{
 				JOptionPane.showMessageDialog(null, "Complete todos los campos");
 			}
 			else {
-				pedido = new PedidoCrearDTO(txtName.getText(), false,
+				pedido = new PedidoCrearDTO(txtName.getText(), true,
 												Integer.parseInt(txtDni.getText()),
 											   txtAddress.getText(), 
 											   Integer.parseInt(txtMobile.getText()),
