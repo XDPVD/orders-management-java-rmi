@@ -7,6 +7,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/USUARIO/Documents/Arian ZQ/7 ciclo/Arqui de Sw/orders-management-java-rmi/mysql-connector-java-8.0.25.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Edward/Documents/Github/Java-RMI/orders-management-java-rmi/mysql-connector-java-8.0.25.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -196,16 +196,17 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT ID_COMIDA, NOMBRE, IMAGEN FROM PLATO;"
 		);
-		this.desconectar();
+		
 		System.out.println("--- Operacion obtenerPlatos END ---");
-		this.desconectar();
+		
 		return writePlatosData(resultSet);
 		
 	}
 	
 	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws RemoteException, SQLException {
+		System.out.print("miguelon");
 		ArrayList<PlatoDetallesDTO> platos = new ArrayList<PlatoDetallesDTO>();
-		this.conectar();
+
 		while(result.next()) {
 			int id_comida = result.getInt("ID_COMIDA");
 			String nombre = result.getString("NOMBRE");
@@ -213,7 +214,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			
 			platos.add(new PlatoDetallesDTO(id_comida, nombre, null));
 			
-			// System.out.println("IMAGEN: " + imagen);
+			System.out.println("NOMBRE COMIDA: " + nombre);
 		}
 		this.desconectar();
 		return platos;
