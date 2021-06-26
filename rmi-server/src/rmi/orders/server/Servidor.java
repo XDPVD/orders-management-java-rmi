@@ -76,11 +76,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 
 	@Override
 	public List<PedidoDetailsDTO> obtenerPedidosTerminados() throws RemoteException, SQLException{
+		this.conectar();
 		System.out.println("--- Operacion obtenerPedidosTerminados ---");
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='terminado';"
 		);
+		this.desconectar();
 		return writePedidosData(resultSet);
 	}
 
@@ -88,6 +90,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	public int terminarPedido(int id_pedido) throws RemoteException, SQLException {
 		Date date = new Date();
 		
+		this.conectar();
 		PreparedStatement pstmt = connection.prepareStatement(
 			"UPDATE PEDIDO SET ESTADO_PEDIDO ='terminado' WHERE ID_PEDIDO="+id_pedido
 		);
@@ -100,22 +103,26 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		pstmt.executeUpdate();
 		pstmt2.executeUpdate();
 		
+		this.desconectar();
 		return 0;
 	}
 	
 
 	@Override
 	public List<PedidoDetailsDTO> obtenerPedidosPendientes() throws RemoteException, SQLException {
+		this.conectar();
 		System.out.println("--- Operacion obtenerPedidosPendientes ---");
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='pendiente';"
 		);
+		this.desconectar();
 		return writePedidosData(resultSet);
 	}
 	
-	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws SQLException {
+	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PedidoDetailsDTO> pedidos = new ArrayList<PedidoDetailsDTO>();
+		this.conectar();
 		while(result.next()) {
 			//Llena los detalles del Pedido
 			PedidoDetailsDTO detalles;
@@ -171,11 +178,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			//Insertar Pedido a la Lista
 			pedidos.add(detalles);
 		}
+		this.desconectar();
 		return pedidos;
 	}
 
 	@Override
 	public List<PlatoDetallesDTO> obtenerPlatos() throws RemoteException, SQLException {
+		this.conectar();
 		System.out.println("--- Operacion obtenerPlatos ---");
 		
 		Statement statement = connection.createStatement();
@@ -183,13 +192,13 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT ID_COMIDA, NOMBRE, IMAGEN FROM PLATO;"
 		);
-		
+		this.desconectar();
 		return writePlatosData(resultSet);
 	}
 	
-	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws SQLException {
+	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PlatoDetallesDTO> platos = new ArrayList<PlatoDetallesDTO>();
-		
+		this.conectar();
 		while(result.next()) {
 			int id_comida = result.getInt("ID_COMIDA");
 			String nombre = result.getString("NOMBRE");
@@ -199,14 +208,15 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			
 			// System.out.println("IMAGEN: " + imagen);
 		}
-		
+		this.desconectar();
 		return platos;
 	}
 	
 
 	@Override
-	public int crearPedido(PedidoCrearDTO nuevoPedido) throws SQLException  {
+	public int crearPedido(PedidoCrearDTO nuevoPedido) throws RemoteException, SQLException  {
 		// TODO Auto-generated method stub
+		this.conectar();
 		if(nuevoPedido.getNumbersOfLines() == 0) return -1;
 		
 		Date currentDate = new Date();
@@ -271,7 +281,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			preparedStatement.executeUpdate();
 			
 		}
-		
+		this.desconectar();
 		return 1;
 		
 	}
