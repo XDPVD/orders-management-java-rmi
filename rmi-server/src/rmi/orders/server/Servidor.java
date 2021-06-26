@@ -119,7 +119,6 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='pendiente';"
 		);
-		this.desconectar();
 		
 		System.out.println("------ obtenerPedidosPendientes() ------");
 		System.out.println(resultSet);
@@ -128,7 +127,6 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	
 	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PedidoDetailsDTO> pedidos = new ArrayList<PedidoDetailsDTO>();
-		this.conectar();
 		while(result.next()) {
 			//Llena los detalles del Pedido
 			PedidoDetailsDTO detalles;
@@ -199,7 +197,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT ID_COMIDA, NOMBRE, IMAGEN FROM PLATO;"
 		);
-		this.desconectar();
+
 		System.out.println("--- Operacion obtenerPlatos END ---");
 		return writePlatosData(resultSet);
 		
@@ -207,7 +205,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 	
 	private List<PlatoDetallesDTO> writePlatosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PlatoDetallesDTO> platos = new ArrayList<PlatoDetallesDTO>();
-		this.conectar();
+
 		while(result.next()) {
 			int id_comida = result.getInt("ID_COMIDA");
 			String nombre = result.getString("NOMBRE");
@@ -215,7 +213,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 			
 			platos.add(new PlatoDetallesDTO(id_comida, nombre, null));
 			
-			// System.out.println("IMAGEN: " + imagen);
+			System.out.println("NOMBRE COMIDA: " + nombre);
 		}
 		this.desconectar();
 		return platos;
