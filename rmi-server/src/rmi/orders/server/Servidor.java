@@ -258,7 +258,8 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		}
 		else {
 			PreparedStatement preparedStatement = connection.prepareStatement(
-					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, ESTADO_PEDIDO, ARCHIVADO)"+ 
+					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, "
+					+ "ESTADO_PEDIDO, ARCHIVADO)"+ 
 					"VALUES( ?, ?, ?, ? , 0)"
 			);
 			
