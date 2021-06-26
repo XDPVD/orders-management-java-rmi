@@ -122,6 +122,7 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		this.desconectar();
 		
 		System.out.println("------ obtenerPedidosPendientes() ------");
+		System.out.println(resultSet);
 		return writePedidosData(resultSet);
 	}
 	
@@ -257,8 +258,9 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		}
 		else {
 			PreparedStatement preparedStatement = connection.prepareStatement(
-					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, ESTADO_PEDIDO)"+ 
-					"VALUES( ?, ?, ?, ? )"
+					"INSERT INTO PEDIDO(NOMBRE_PERSONA, DELIVERY, FECHA_PEDIDO, "
+					+ "ESTADO_PEDIDO, ARCHIVADO)"+ 
+					"VALUES( ?, ?, ?, ? , 0)"
 			);
 			
 			preparedStatement.setString(1, nuevoPedido.getNombre_persona());

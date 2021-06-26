@@ -14,12 +14,14 @@ public class MainCliente {
 	
 	/*Deben utilizar la excepcion RemoteException cada vez que utilicen el objeto servidor*/
 	
-	private static IServidorCocina servidor;
+	private static IServidorMesa servidor;
 	
 	public static void main(String[] args) throws Exception {
 		
 		Registry registry = LocateRegistry.getRegistry(3333);
-		servidor = (IServidorCocina)registry.lookup("TestServer");
+		servidor = (IServidorMesa)registry.lookup("TestServer");
+		
+		System.out.println(servidor.obtenerPedidosTerminados().get(0).toString());
 		
 	}
 	
