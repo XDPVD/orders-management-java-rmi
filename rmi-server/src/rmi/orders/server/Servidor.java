@@ -116,13 +116,12 @@ public class Servidor implements IServidorMesa, IServidorCaja, IServidorCocina{
 		ResultSet resultSet = statement.executeQuery(
 				"SELECT * FROM PEDIDO WHERE ARCHIVADO=0 AND ESTADO_PEDIDO='pendiente';"
 		);
-		this.desconectar();
 		return writePedidosData(resultSet);
 	}
 	
 	private List<PedidoDetailsDTO> writePedidosData(ResultSet result) throws RemoteException, SQLException {
 		ArrayList<PedidoDetailsDTO> pedidos = new ArrayList<PedidoDetailsDTO>();
-		this.conectar();
+		//this.conectar();
 		while(result.next()) {
 			//Llena los detalles del Pedido
 			PedidoDetailsDTO detalles;
